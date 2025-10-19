@@ -71,24 +71,26 @@ function CategoryThreadsPageComponent(props: { categoryId: string | number }) {
             </Typography>
           </Box>
         </Box>
-        {category?.children?.length > 0 && (
+        {category?.children?.filter((i) => !i.hidden).length > 0 && (
           <>
             <Divider orientation="horizontal" />
             <Box display="flex" flexWrap="wrap" alignItems="center" sx={{ pl: 1, pr: 1, pt: 0.5, pb: 0.5 }}>
               <Typography sx={{ fontSize: '13px', opacity: 0.7 }}>子版块</Typography>
-              {category.children.map((c) => (
-                <Button
-                  key={c.id}
-                  size="small"
-                  variant="outlined"
-                  color="inherit"
-                  sx={{ ml: 1, mt: 0.5, mb: 0.5, textAlign: 'left' }}
-                  onClick={() => history.push(`/thread/category/${c.id}`)}
-                >
-                  {c.name}
-                  <span style={{ opacity: 0.6 }}>({getCategoryTotalThreadCount(c)})</span>
-                </Button>
-              ))}
+              {category.children
+                .filter((i) => !i.hidden)
+                .map((c) => (
+                  <Button
+                    key={c.id}
+                    size="small"
+                    variant="outlined"
+                    color="inherit"
+                    sx={{ ml: 1, mt: 0.5, mb: 0.5, textAlign: 'left' }}
+                    onClick={() => history.push(`/thread/category/${c.id}`)}
+                  >
+                    {c.name}
+                    <span style={{ opacity: 0.6 }}>({getCategoryTotalThreadCount(c)})</span>
+                  </Button>
+                ))}
             </Box>
           </>
         )}
