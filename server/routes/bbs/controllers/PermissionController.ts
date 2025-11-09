@@ -7,6 +7,7 @@ import {
   addGroupPermission,
   AllGlobalPermissions,
   getGroupPermissions,
+  getGroupPermissionsFromDB,
   PermissionType,
   removeGroupPermission,
   setGroupPermissions,
@@ -30,7 +31,7 @@ export default class PermissionController {
     @CurrentDB() db: Sequelize,
     @QueryParam('group_id', { required: true }) groupId: number,
   ) {
-    return await getGroupPermissions(db, groupId);
+    return await getGroupPermissionsFromDB(db, groupId);
   }
 
   @Post('/addPermission')

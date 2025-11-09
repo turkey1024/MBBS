@@ -1,6 +1,7 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
 import { createModelCache } from '../utils/model-cache';
 import { GROUP_ID_TOURIST } from '../routes/bbs/const';
+import { getSettingValue } from './Settings';
 
 declare type CategoryPermissionType =
   | 'viewThreads' // 浏览帖子
@@ -129,6 +130,18 @@ export async function hasOneOfPermissions(db: Sequelize, groupId: number, ...che
 
 /** 获取 groupId 的所有权限 */
 export async function getGroupPermissions(db: Sequelize, groupId: number): Promise<PermissionType[]> {
+  if (groupId == null) {
+    groupId = GROUP_ID_TOURIST;
+  }
+  if (groupId === GROUP_ID_TOURIST && (await getSettingValue(db, 'site_need_login_first')) === '1') {
+    // 开启前置登录后，认为游客身份无任何权限
+    return [];
+  }
+  return getGroupPermissionsFromDB(db, groupId);
+}
+
+/** 获取 groupId 的所有权限 */
+export async function getGroupPermissionsFromDB(db: Sequelize, groupId: number): Promise<PermissionType[]> {
   if (groupId == null) {
     groupId = GROUP_ID_TOURIST;
   }
