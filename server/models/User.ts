@@ -136,8 +136,10 @@ export class User extends Model<Partial<User>> {
   toJSON() {
     return {
       ...super.toJSON(),
+      mobile: undefined,
       password: undefined,
       last_login_ip: undefined,
+      register_ip: undefined,
       register_reason: undefined,
       register_invitation_code: undefined,
       email: !!this.email, // 默认隐藏真实邮箱
