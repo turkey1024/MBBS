@@ -5,12 +5,14 @@
   "bin": "./bin/mbbs",
   "scripts": {
     "start": "npm run build-web && npm run start-server",
-    "start-server": "ts-node ./server/index",
-    "build-web": "cd web && npm i --no-save && npm run build",
-    "dev": "concurrently \"cd web && npm i --no-save && npm run start\" \"wait-on http://localhost:8841/ && nodemon -e ts --exec cross-env ENV=dev ts-node ./server/index\"",
-    "prepublishOnly": "npm run build-web && tsc",
+    "start-server": "NODE_OPTIONS='--max_old_space_size=4096' ts-node ./server/index",
+    "build-web": "cd web && npm i --no-save --registry=https://registry.npmmirror.com && NODE_OPTIONS='--max_old_space_size=2048' npm run build",
+    "dev": "concurrently \"cd web && npm i --no-save && NODE_OPTIONS='--max_old_space_size=1024' npm run start\" \"wait-on http://localhost:8841/ && nodemon -e ts --exec cross-env ENV=dev NODE_OPTIONS='--max_old_space_size=2048' ts-node ./server/index\"",
+    "prepublishOnly": "npm run build-web && NODE_OPTIONS='--max_old_space_size=2048' tsc",
     "prettier": "prettier --write 'web/src/**/*.{js,jsx,tsx,ts,less,md,json}' && prettier --write 'server/**/*.{js,jsx,tsx,ts,less,md,json}'",
-    "test": "npx jest"
+    "test": "NODE_OPTIONS='--max_old_space_size=1024' npx jest",
+    "check-memory": "node -e \"console.log('Memory limit:', require('v8').getHeapStatistics().heap_size_limit / 1024 / 1024, 'MB')\"",
+    "build-web-safe": "cd web && npm i --no-save --registry=https://registry.npmmirror.com && (NODE_OPTIONS='--max_old_space_size=2048' npm run build || echo '前端构建失败，但继续启动服务')"
   },
   "files": [
     "bin",
@@ -107,5 +109,10 @@
     "typescript": "^4.7.4",
     "wait-on": "^6.0.1",
     "yorkie": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
   }
 }
+
