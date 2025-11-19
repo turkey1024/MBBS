@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: mbbs-forum
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build-web
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 18.x
+
+
